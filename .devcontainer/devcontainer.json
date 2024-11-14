@@ -1,0 +1,22 @@
+{
+    // Basic
+    "name": "Schedulify Dev Container",
+    "dockerComposeFile": "docker-compose.dev.yml",
+    "service": "workspace",
+    "workspaceFolder": "/home/vscode/${localWorkspaceFolderBasename}",
+    // Featuring
+    "features": {
+      "ghcr.io/devcontainers/features/docker-in-docker:2":{}
+    },
+    // Custom
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "github.vscode-github-actions"
+        ]
+      }
+    },
+  
+    // LifeCycles
+    "initializeCommand": "bash ./.devcontainer/commands/initializeCommand.sh ${localWorkspaceFolder} ${containerWorkspaceFolder} ${localWorkspaceFolderBasename} ${containerWorkspaceFolderBasename}"
+  }
