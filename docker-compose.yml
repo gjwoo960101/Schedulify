@@ -1,7 +1,0 @@
-services:
-  test:
-    container_name: test
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - 58080:80
