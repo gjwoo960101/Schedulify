@@ -4,3 +4,11 @@ services:
     image: gjwoo96/schedulify:latest-test
     ports:
       - 58080:80
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: Asia/Seoul
+      WATCHTOWER_POLL_INTERVAL: 30
+    restart: unless-stopped
