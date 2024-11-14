@@ -30,4 +30,4 @@ jobs:
         uses: docker/build-push-action@v6
         with: 
           push: true
-          tags: gjwoo96/deploytest:latest, gjwoo96/deploytest:1.0.0
+          tags: gjwoo96/schedulify:latest-test
