@@ -1,0 +1,6 @@
+services:
+  test:
+    container_name: test
+    image: gjwoo96/schedulify:latest-test
+    ports:
+      - 58080:80
