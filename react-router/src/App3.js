@@ -2,11 +2,27 @@ import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter, Routes, Route, NavLink, useParams} from 'react-router-dom';
 
+const answer = [
+    {id : 1 , text : '맞아 어렵지..'},
+    {id : 2 , text : '쉽게 생각하면 쉬울꺼야'},
+    {id : 3 , text : '너도?? 나도 몰라'}
+]
+
 function One(){
     var params = useParams();
-    console.log("params check : ",params)
+    const index = Number(params.index);
+    let resultComp = '';
+
+    for(let i = 0; i < answer.length; i++){
+       if(index === answer[i].id){
+        console.log(answer[i].text);
+        resultComp = <div>{answer[i].text}</div>
+       }
+    }
     return(
-        <div>나는 전부 모르겠어.</div>
+        <>
+            {resultComp}
+        </>
     )
 }
 
