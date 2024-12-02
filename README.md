@@ -19,15 +19,6 @@ docker push gjwoo96/schedulify:test
 6. 이미지 푸쉬
 
 
-
-
-
-
-
-
-
-
-
 // CD (Continous Delivery)
 7. prod 환경에 이미지를 run // kubectl
 

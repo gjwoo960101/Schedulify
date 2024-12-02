@@ -18,7 +18,7 @@ function Body(props){
                {data.map(item =>(
                 <li key={item.id}><a href={'/'+item.id} id={item.id} onClick={event=>{
                     event.preventDefault();
-                    props.onChangEle(event.target.id);
+                    props.onChangEle(Number(event.target.id));
                 }}>{item.body}</a></li>
                ))} 
             </ol>
@@ -38,6 +38,23 @@ function Create(props){
     )
 }
 
+function Update(props){
+
+    const [body,setBody] = useState(props.body);
+
+    return(
+        <form onSubmit={event => {
+            event.preventDefault();
+            props.onUpdate(event.target.body.value);
+        }}>
+            <p><textarea name='body' placeholder='body' value={body} onChange={event => {
+                setBody(event.target.value);
+            }}></textarea></p>
+            <p><input type='submit' value='li수정'></input></p>
+        </form>
+    );
+}
+
 
 function App(){
     const [mode,setMode] = useState('READ');
@@ -51,13 +68,23 @@ function App(){
     ]);
 
     let selectText = '';
+    let updateComp = '';
+    let createComp = '';
     if(mode === 'READ'){
         lis.forEach(item=>{
-                if(item.id === Number(id)){
+                if(item.id === id){
                     selectText = item.body;
                 }
             }
         );
+        updateComp = <button onClick={()=>{
+            setMode('UPDATE')
+            }} type='button'>수정</button>;
+        
+        createComp = <button onClick={()=>{
+            setMode('CREATE')
+            }} type='button' style={{marginRight: '10px'}}>추가</button>;
+
     }else if(mode === 'CREATE'){
         selectText = <Create onChangeSave={(_body) => {
             const addLis = {id : newId, body: _body}
@@ -68,6 +95,31 @@ function App(){
             setId(newId);
             setNewId(newId+1);
         }}></Create>
+    }else if (mode === 'UPDATE'){
+        let body = null;
+        lis.forEach(item=>{
+            if(item.id === Number(id)){
+                body = item.body;
+            }
+        }
+    );
+
+        selectText = <Update onUpdate={(_body) => {
+            const newLis = [...lis];
+            const updatebody = {id : id, body : _body};
+            for(let i = 0; i < newLis.length; i ++){
+
+                console.log("id check : ",typeof id)
+                console.log("id22 check : ",typeof newLis[i].id)
+
+                if(newLis[i].id === id){
+                    newLis[i] = updatebody;
+                    break;
+                }
+            }
+            setLis(newLis);
+            setMode('READ');
+        }} body={body}></Update>
     }
     
 
@@ -79,9 +131,10 @@ function App(){
                 setMode('READ')
             }}></Body>
             
-            <p><button onClick={()=>{
-                setMode('CREATE')
-                }} type='button'>추가</button></p>
+            <p>
+                {createComp}
+                {updateComp}
+            </p>
             <p>{selectText}</p>
         </div>
     );
