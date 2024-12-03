@@ -9,8 +9,6 @@ const firMenu = [
     {id : 3 , name: '작성' , url : '/write'},
     {id : 4 , name: '수정' , url : '/edit'}
 ]
-const data = [];
-
 
 function Menu (){
     let result = [];
@@ -27,6 +25,7 @@ function Menu (){
 function SubMenu(){
     const [selectIndex,setSelectIndex] = useState(0);
     const navigate = useNavigate();
+    const [data,setData] = useState([]);
 
     const location = useLocation();
     const path = location.pathname;
@@ -40,29 +39,78 @@ function SubMenu(){
     const commonComp = 
     <form onSubmit={(event) => {
         event.preventDefault();
-        data.push({id: selectIndex ,title : event.target.title.value , context : event.target.context.value});
+        setData([...data,{id: selectIndex ,title : event.target.title.value , context : event.target.context.value}]);
         setSelectIndex(selectIndex+1);
         navigate('/read');
     }}>
         <p><input type='text' name='title' placeholder='제목을 작성해주세요'></input></p>
-        <p><textarea name='context' placeholder='내용을 작성해주세요' style={{width:'550px', height:'150px' ,resize: 'none'}}></textarea></p>
+        <p><textarea name='context' placeholder='내용을 작성해주세요' className='common-textarea'></textarea></p>
         <button type='submit'>{buttonText}</button>
     </form>
 
-    //읽기
+    function EditComp(props){
+        const [editTitle,setEditTitle] = useState(props.title);
+        const [editContext,setEditContext] = useState(props.context);
+        return(
+            <form onSubmit={(event) => {
+                event.preventDefault();
+                let editData = [...data];
+                for(let i=0; i < editData.length; i++){
+                    if(props.id === editData[i].id){
+                        editData[i] = {id : props.id, title : editTitle, context : editContext}
+                    }
+                }
+                setData(editData);
+                navigate('/read');
+            }}>
+                <p><input type='text' name='title' onChange={(e)=>{setEditTitle(e.target.value)}} value={editTitle}></input></p>
+                <p><textarea name='context' placeholder='내용을 작성해주세요' className='common-textarea'onChange={(e)=>{setEditContext(e.target.value)}} value={editContext}></textarea></p>
+                <button type='submit'>수정완료</button>
+            </form>
+        )
+    }
 
+    //읽기
     function ReadSub(){
+
         var params = useParams();
         const read_id = Number(params.read_id);
-        var resultComp = <div><h2>상세정보가 없습니다.</h2></div>;
+        const [isEditing,setIsEditing] = useState(false);
+
+
+        var resultComp = 
+        <div>
+            <button type='button' onClick={(event)=>{
+                event.preventDefault();
+                navigate('/read');
+                }} className='Button-size'>뒤로가기</button>
+            <h2>상세정보가 없습니다.</h2>
+        </div>;
         if(data.length > 0){
             {data.map((item) => {
                 if(read_id === item.id){
-                    resultComp = 
-                    <div style={{display:'flex',flexDirection:'column'}}>
-                        <h2>{item.title}</h2>
-                        <textarea value={item.context} style={{width:'550px', height:'150px',resize: 'none'}}></textarea>
-                    </div>
+                    // 수정모드 UI
+                    if(!isEditing){
+                        resultComp = 
+                        <div style={{display:'flex',flexDirection:'column'}}>
+    
+                            <button type='button'onClick={(event)=>{
+                            event.preventDefault();
+                            navigate('/read');
+                            }} className='Button-size'>뒤로가기</button>
+    
+                            <button type='button' onClick={(event)=>{
+                                event.preventDefault();
+                                setIsEditing(true);
+                            }} className='Button-size mt-3'>수정시작</button>
+                            <h2>{item.title}</h2>
+                            <textarea value={item.context} className='common-textarea' readOnly={true}></textarea>
+                        </div>  
+                    }else{
+                        resultComp = <EditComp id={item.id} title={item.title} context={item.context}></EditComp>
+                        
+                    }
+                    
                 }
                 return resultComp;
             })}
@@ -70,7 +118,6 @@ function SubMenu(){
         return (
             resultComp
         )
-        
     }
     
     function ReadComp(){
