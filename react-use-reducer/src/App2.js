@@ -61,9 +61,11 @@ const AddButton = styled.button`
     height:100%;
     width:10%;
     border: none;
-    background-color: #a9a9a9d1;
+    background-color: #101010d1;
     color: white;
     font-size: 2rem;
+    border-radius: .5rem;
+    cursor: pointer;
 `
 const Content = styled.div`
     height : 50vh;
@@ -79,8 +81,9 @@ const ContentDiv = styled.div`
 const ContentWrapperDiv = styled.div`
     height : 5vh;
     width : 100%;
-    border-bottom : ${props => props.last ? 'none' : '1px solid gray'};
+    border-bottom : 1px solid gray;
     display: flex;
+    margin-bottom  : ${props => props.last ? '1rem' : ''};
 `
 const Content_fir_div = styled.div`
     width: 5%;
@@ -123,8 +126,66 @@ const Content_button = styled.button`
     }
 `
 
+function ContentData (props){
+    console.log("props: ",props)
+    const contentArry = [];
+    for(let i = 0 ; i < props.content.length; i++){
+
+        var data = 
+        <ContentWrapperDiv>
+                <Content_fir_div>
+                    <Content_fir_checkbox type='checkbox'></Content_fir_checkbox>
+                </Content_fir_div>
+                <Content_sec_div>
+                    <Content_sec_body>{props.content[i].content}</Content_sec_body>
+                    <Content_sec_body>{props.content[i].date}</Content_sec_body>
+                </Content_sec_div>
+                <Content_third_div>
+                    <Content_button onClick={()=>props.reducer({data: {id : props.content[i].id},type : 'delete'})}>Delete</Content_button>
+                    <Content_button onClick={()=>props.reducer({data: {id : props.content[i].id},type : 'edit'})}>Edit</Content_button>
+                </Content_third_div>
+            </ContentWrapperDiv>
+        contentArry.push(data);   
+    }
+    return (
+        <ContentDiv>
+            {contentArry}
+        </ContentDiv>
+    )
+}
+
+function getNowTime(){
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2,'0');
+    return (
+        `${year}-${month}-${day} ${hours}:${min}`
+    )
+}
+
 
 function App () {
+    const [inputData, setInputData] = useState();
+    const [index ,setIndex] = useState(0);
+
+    const dataEditReducer = (state,action) => {
+        switch(action.type){
+            case 'add':
+                setIndex(index+1);
+                return [...state,action.data]
+            case 'edit':
+                return [...state,action.data]
+            case 'delete':
+                return state.filter((todo) => todo.id !== action.data.id);
+        }
+    }
+    const initeState = [];
+    const [data,dispatch] = useReducer(dataEditReducer,initeState);
+    
+
     return (
         <Wrapper>
             <Body>
@@ -132,28 +193,13 @@ function App () {
                     <Header_fir><h1>Todo List</h1></Header_fir>
                     <Header_sec>
                         <Header_sec_Wapper>
-                            <HeaderInput type='text' name='content' placeholder='내용을 입력해주세요.'></HeaderInput>
-                            <AddButton>+</AddButton>
+                            <HeaderInput type='text' placeholder='내용을 입력해주세요.' onChange={(e) => {setInputData(e.target.value)}}></HeaderInput>
+                            <AddButton onClick={() => dispatch({data: {id : index , content : inputData, date: getNowTime()},type : 'add'})}>+</AddButton>
                         </Header_sec_Wapper>
                     </Header_sec>
                 </Header>
                 <Content>
-                    <ContentDiv>
-                        <ContentWrapperDiv last={false}>
-                            <Content_fir_div>
-                                <Content_fir_checkbox type='checkbox'></Content_fir_checkbox>
-                            </Content_fir_div>
-                            <Content_sec_div>
-                                <Content_sec_body>안녕하세요 텍스트 입니다</Content_sec_body>
-                                <Content_sec_body>2024-12-06 12:39pm</Content_sec_body>
-                            </Content_sec_div>
-                            <Content_third_div>
-                                <Content_button>Delete</Content_button>
-                                <Content_button>Edit</Content_button>
-                            </Content_third_div>
-                        </ContentWrapperDiv>
-                        
-                    </ContentDiv>
+                    <ContentData content={data} reducer = {dispatch}></ContentData>
                 </Content>
             </Body>
         </Wrapper>
