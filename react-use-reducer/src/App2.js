@@ -127,7 +127,6 @@ const Content_button = styled.button`
 `
 
 function ContentData (props){
-    console.log("props: ",props)
     const contentArry = [];
     for(let i = 0 ; i < props.content.length; i++){
 

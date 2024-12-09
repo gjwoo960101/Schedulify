@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>with Redux</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.min.js"></script>
+</head>
+<body>
+    <style>
+        .container{
+            border:5px solid black;
+            padding: 10px;
+        }
+    </style>
+    <div id="red"></div>
+    <div id="green"></div>
+    <div id="blue"></div>
+    <script>
+        //state(이전 상태값) , 어떤 상태변경이 필요한지 설명하는 객체 (반드시 type 속성 => ex) 'ADD', 'DELETE' , 'RESET')등 
+        function reducer(state, action){
+            if(state === undefined){
+                return {color : 'yellow'}
+            }
+        }
+        // 장부
+        var store = Redux.createStore(reducer);
+        
+        function red(){
+            var state = store.getState();
+            document.querySelector('#red').innerHTML = `
+                <div class="container" id="component_red" style="background-color:${state.color}">
+                    <h1>red<h1>
+                    <input type="button" value="fire" onClick="
+                    document.querySelector('#component_red').style.backgroundColor='red';
+                    document.querySelector('#component_green').style.backgroundColor='red';
+                    document.querySelector('#component_blue').style.backgroundColor='red';
+                    ">    
+                </div>    
+            `;
+        }
+        red();
+    </script>
+</body>
+</html>
