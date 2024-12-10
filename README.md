@@ -34,5 +34,5 @@ pod = 컨테이너
 
 
 //
-npm start (리엑트 프로젝트 실행)
+npm start (리엑트 프로젝트 실행)  
 yarn create react-app . (.은 현재경로, 리엑트 프로젝트 생성 명령어)
