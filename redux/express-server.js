@@ -15,6 +15,10 @@ app.get('/redux',  (req, res) => {
     res.sendFile(path.join(__dirname, 'public/src', 'with-redux.html'));
 });
 
+app.get('/redux_stu',  (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/src', 'redux-stu.html'));
+});
+
 app.listen(PORT, () =>{
     console.log(`Server is running on http://localhost:${PORT}`);
 })

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>redux-study</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.min.js"></script>
+</head>
+<body>
+    <style>
+        .container{
+            border:5px solid black;
+            padding: 10px;
+        }
+    </style>
+    <div id="blue"></div>
+    <script>
+        const reducer = (state, action)=>{
+            // state 초기값 지정
+            if(state === undefined){
+                return {color : 'yellow', text : '안녕하세요!'}
+            }
+            var newState = null;
+            if(action.type === 'CHANGE_COLOR'){
+                newState = Object.assign({},{color: action.color}, {text : action.text});
+            }
+            return newState;
+        }
+
+        const store = Redux.createStore(reducer);
+
+        const blue = ()=>{
+            const state = store.getState();
+            console.log("blue in state: ",state)
+            document.querySelector("#blue").innerHTML = `
+                <div class="container" style="background-color:${state.color}">
+                    <h1>${state.text}<h1>
+                    <input type="text" id="textinput">    
+                    <input type="button" value="fire" onClick="
+                        const inputValue = document.getElementById('textinput').value;
+                        store.dispatch({type:'CHANGE_COLOR',color:'red',text:inputValue});
+                    ">    
+                </div>
+            `
+        }
+        store.subscribe(blue);
+        blue();
+        
+    </script>
+    
+</body>
+</html>
