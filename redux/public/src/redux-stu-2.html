@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redux-stu-2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.min.js"></script>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="menu"></div>
+    <div id="body"></div>
+    <script>
+       
+        const header  = () =>{
+            var state = store.getState();
+            var menuText = '';
+            if(state.menu === 'main'){
+                menuText = '메인'
+            }else if (state.menu === 'read'){
+                menuText = '보기'
+            }else if (state.menu === 'write'){
+                menuText = '쓰기'
+            }else if (state.menu === 'delete'){
+                menuText = '삭제'
+            }else if (state.menu === 'edit'){
+                menuText = '수정'
+            }else{
+                menuText = 'Welcome'
+            }
+            document.querySelector('#header').innerHTML=`
+                <h1>${menuText}</h1>
+            `
+        }
+
+        const menu = () => {
+            
+            document.querySelector('#menu').innerHTML=`
+                <ul>
+                    <li><a href="/main" onClick = "event.preventDefault(); store.dispatch({type : 'MAIN'});">메인으로</a></li>
+                    <li><a href="/read" onClick = "event.preventDefault(); store.dispatch({type : 'READ'});">보기</a></li>
+                    <li><a href="/write" onClick = "event.preventDefault(); store.dispatch({type : 'WRITE'});">쓰기</a></li>
+                    <li><a href="/delete" onClick = "event.preventDefault(); store.dispatch({type : 'DELETE'});">삭제</a></li>
+                    <li><a href="/edit" onClick = "event.preventDefault(); store.dispatch({type : 'EDIT'});">수정</a></li>
+                </ul>
+
+            `
+        }
+
+        const body = () => {
+            var state = store.getState();
+            var dataState = store2.getState();
+            
+            if(state.menu === 'read'){
+                var readHtml = '';
+                if(dataState.contents.length > 0){
+                    for(let i = 0; i < dataState.contents.length; i++){
+                        readHtml += `<li><a href="/" onClick = "event.preventDefault(); store2.dispatch({mode : 'READ', select_id  : ${dataState.contents[i].id}});">${dataState.contents[i].title}</a></li>`
+                    }
+                }else{
+                    readHtml += `<li>저장된 글이 없습니다.</li>`
+                }
+                document.querySelector('#body').innerHTML=`
+                    <ul>
+                        ${readHtml}
+                    </ul>
+                `
+            }else if(state.menu === 'write'){
+                var writeHtml = '';
+                var id = store2.num;
+                writeHtml += `
+                    <form onsubmit = "
+                        event.preventDefault();
+                        var _title = this.title.value;
+                        var _content = this.content.value;
+                        store2.dispatch({type:'WRITE',num:id,title: _title,content:_content});
+
+                    ">
+                        <p><input type="text" name="title" placeholder="title..."></p>
+                        <p><textarea type="text" name="content" placeholder="content..."></textarea></p>
+                        <p><input type="submit"></p>
+                        
+                    </form>
+                `
+                document.querySelector('#body').innerHTML=`
+                    ${writeHtml}
+                `
+            }
+            
+        }
+
+        const menuReducer = (state,action) => {
+
+            if(state === undefined){
+                return {
+                    type : '',
+                }
+            }
+            var newState = {};
+            
+            if(action.type === 'MAIN'){
+                newState = Object.assign({},state,{menu: 'main'});
+            }else if(action.type === 'READ' ){
+                newState = Object.assign({},state,{menu: 'read'});
+            }else if (action.type === 'WRITE'){
+                newState = Object.assign({},state,{menu: 'write'})
+            }else if (action.type === 'DELETE'){
+                newState = Object.assign({},state,{menu: 'delete'})
+            }else if (action.type === 'EDIT'){
+                newState = Object.assign({},state,{menu: 'edit'})
+            }
+            return newState;
+        }
+
+        const dataReducer = (state,action) =>{
+            console.log("dataReducer: ", state,action)
+            if (state === undefined){
+                return {num: 0,selected_id : 0,contents:[]}
+            }
+            var newState = {};
+            
+            if(action.type === 'READ'){
+                return state;
+
+            }else if (action.type === 'WRITE'){
+                var newContents = [...state.contents];
+                newContents.push({title:action.title,content:action.content});
+                console.log("newContents: ",newContents)
+                console.log("state.contents: ",state.contents)
+                newState = Object.assign({},state,{num:action.num+1 , contents:newContents});
+            }
+            console.log("newState check : ",newState)
+            return newState;
+        }
+        // 메뉴이동 store
+        var store  = Redux.createStore(menuReducer);
+        // 데이터처리 store
+        var store2 = Redux.createStore(dataReducer);
+
+        header();
+        menu();
+        body();
+
+        store.subscribe(header);
+        store.subscribe(body);
+    </script>
+</body>
+</html>
