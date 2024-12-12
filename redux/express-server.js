@@ -13,7 +13,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/',  (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/src', 'main.html'));
+    res.sendFile(path.join(__dirname, 'public/src', 'redux-stu-2.html'));
 });
 
 app.get('/noRedux',  (req, res) => {
