@@ -1,0 +1,243 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Arial', sans-serif; /* 부드러운 폰트로 변경 */
+}
+
+.wrapper {
+  background-color: #f9f9f9;
+  min-height: 100vh; /* 화면 전체 높이 */
+  display: flex;
+  flex-direction: column;
+}
+
+.main-header {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 20px;
+  text-align: center;
+}
+
+.body {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1; /* 남은 공간을 채우도록 설정 */
+}
+
+.half-container-left,
+.half-container-right {
+  width: 100%;
+  height: auto;
+  background-color: #ffffff; /* 밝은 배경색 */
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0; /* 밝은 테두리 색상 */
+}
+
+@media (min-width: 768px) {
+  .half-container-left,
+  .half-container-right {
+    width: 50%;
+    height: 100%;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.table-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.table-row {
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.3s;
+}
+
+.table-row:hover {
+  background-color: #f1f3f5;
+}
+
+.table-cell {
+  padding: 12px;
+  text-align: left;
+  border-right: 1px solid #dee2e6;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.margin-bottom {
+  margin-bottom: 1vh;
+}
+
+.search-form {
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 2px solid #e0e0e0; /* 밝은 테두리 색상 */
+  border-radius: 25px 0 0 25px;
+}
+
+.search-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 2px solid #e0e0e0; /* 밝은 테두리 색상 */
+  border-left: none;
+  border-radius: 0 25px 25px 0;
+  background-color: #007bff; /* 버튼 배경색 */
+  color: #ffffff; /* 버튼 글자색 */
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3; /* 버튼 호버 배경색 */
+}
+
+.post-content {
+  background-color: #ffffff; /* 밝은 배경색 */
+  padding: 20px;
+  border: 1px solid #e0e0e0; /* 밝은 테두리 색상 */
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.post-content h2 {
+  margin-top: 0;
+}
+
+.post-content p {
+  margin: 5px 0;
+}
+
+.post-body {
+  margin-top: 20px;
+}
+
+.post-form {
+  background-color: #ffffff; /* 밝은 배경색 */
+  padding: 20px;
+  border: 1px solid #e0e0e0; /* 밝은 테두리 색상 */
+  border-radius: 4px;
+}
+
+.post-form h2 {
+  margin-top: 0;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0; /* 밝은 테두리 색상 */
+  border-radius: 4px;
+}
+
+.button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.new-post-area {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin-bottom: 1vh;
+}
+
+.post-list {
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.post-header, .post-row {
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  justify-content: center; /* 모든 글을 센터로 맞춤 */
+}
+
+.post-header {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.post-row:hover {
+  background-color: #f1f3f5;
+}
+
+.post-cell {
+  flex: 1;
+  text-align: center; /* 모든 글을 센터로 맞춤 */
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-title a {
+  color: inherit; /* 텍스트 색상을 다른 부분과 동일하게 설정 */
+  text-decoration: none;
+  display: block;
+}
+
+.post-title a:hover {
+  text-decoration: underline;
+}
+
+.post-title {
+  color: inherit; /* 텍스트 색상을 다른 부분과 동일하게 설정 */
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  cursor: pointer;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+}
