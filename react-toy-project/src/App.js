@@ -2,36 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter, Routes, Route, NavLink , useNavigate} from 'react-router-dom';
 import {Provider, useSelector, useDispatch} from 'react-redux';
-import { configureStore} from '@reduxjs/toolkit';
-import { createSlice} from '@reduxjs/toolkit';
-
-const readSlice = createSlice({
-  name: 'readSlice',
-  initialState: {
-    maxNum:0,
-    content:[]
-   
-  },
-  reducers: {
-    write : (state,action) =>{
-      const newData = {
-        ...action.payload
-        , num: state.maxNum+1
-        , createDate: getCurrentDateTime()
-        , count: 0
-      };
-      const newState = [...state.content,newData];
-      state.content = newState;
-      return state;
-    }
-  }
-});
-
-const store = configureStore({
-  reducer: {
-    readSlice: readSlice.reducer
-  }
-});
+import store from './store/store';
 
 const Header = () =>{
   return (
@@ -44,8 +15,8 @@ const Header = () =>{
 const LeftContainer = () =>{
 
   const navigate = useNavigate();
-  const data = useSelector((state) => state.readSlice.content);
-  console.log("data: ",data)
+  const data = useSelector((state) => state.dataSlice.content);
+  const dispatch = useDispatch();
   return (
     <div className='half-container-left'>
           <div className='full-width'>
@@ -75,17 +46,17 @@ const LeftContainer = () =>{
                 <span className='post-cell'>조회수</span>
               </div>
               {data.map((item, index) => (
-                <div className='post-row' key={index}>
+                <NavLink className='post-row' to={`/read`} key={index} onClick={
+                  (e) => {
+                    return dispatch(store.dataSlice.actions.read({num:item.num}));
+                    }
+                  }>
                   <span className='post-cell'>{item.num}</span>
-                  <NavLink className='post-cell post-title' to={`/read`} onClick={
-                    () => console.log({index})
-                    }>
-                    {item.title}
-                  </NavLink>
+                  <span className='post-cell post-title'>{item.title}</span>
                   <span className='post-cell'>{item.author}</span>
                   <span className='post-cell'>{item.createDate}</span>
                   <span className='post-cell'>{item.count}</span>
-                </div>
+                </NavLink>
               ))}
             </div>
           </div>
@@ -93,35 +64,31 @@ const LeftContainer = () =>{
   )
 }
 
+
+
 const PostContent = () =>{
+
+  const data = useSelector((state) => state.dataSlice.readData);
   return (
     <div className='post-content'>
           <h2>게시물 제목</h2>
-          <p>작성자: <span>작성자 이름</span></p>
-          <p>작성일: <span>작성일</span></p>
-          <p>조회수: <span>조회수</span></p>
+          <p>작성자: <span>{data.author}</span></p>
+          <p>작성일: <span>{data.createDate}</span></p>
+          <p>조회수: <span>{data.count}</span></p>
           <div className='post-body'>
-            <p>게시물 내용이 여기에 표시됩니다.</p>
+            <pre>{data.content}</pre>
           </div>
-        </div>
+          <div>
+            <button className='button edit-button'>수정</button>  
+          </div>
+      </div>
   )
 }
-
-const getCurrentDateTime = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-};
 
 const PostForm = () =>{
 
   const dispatch = useDispatch();
-  
+  const navigate = useNavigate();
 
   return (
     <div className='post-form'>
@@ -134,7 +101,8 @@ const PostForm = () =>{
             formData.forEach((value, key) => {
               formValues[key] = value;
             });
-            dispatch(readSlice.actions.write(formValues));
+            dispatch(store.dataSlice.actions.write(formValues));
+            navigate('/main');
           }}>
         <div className='form-group'>
           <label htmlFor='title'>제목</label>
@@ -156,10 +124,20 @@ const PostForm = () =>{
   )
 }
 
+const Main = () =>{
+  return (
+    <div>
+      <h1>Main</h1>
+    </div>
+  )
+}
+
 const RightContainer = () =>{
+
   return(
     <div className='half-container-right'>
       <Routes>
+        <Route path='/main' element={<Main/>}></Route>
         <Route path='/read' element={<PostContent/>}></Route>
         <Route path='/write' element={<PostForm/>}></Route>
       </Routes>

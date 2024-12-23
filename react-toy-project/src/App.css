@@ -195,6 +195,7 @@ html, body {
   padding: 12px;
   border-bottom: 1px solid #dee2e6;
   justify-content: center; /* 모든 글을 센터로 맞춤 */
+  align-items: center; /* 수직 정렬을 맞춤 */
 }
 
 .post-header {
@@ -203,6 +204,11 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 1;
+}
+
+.post-row {
+  text-decoration: none;
+  color: inherit;
 }
 
 .post-row:hover {
@@ -216,6 +222,9 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center; /* 수직 정렬을 맞춤 */
+  justify-content: center; /* 수평 정렬을 맞춤 */
 }
 
 .post-title a {
@@ -240,4 +249,10 @@ html, body {
 
 .post-title:hover {
   text-decoration: underline;
+}
+
+.edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: end;
 }
