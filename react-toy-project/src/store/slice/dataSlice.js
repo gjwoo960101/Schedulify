@@ -1,5 +1,5 @@
 import { createSlice} from '@reduxjs/toolkit';
-import { getCurrentDateTime } from '../../utils/utils.js';
+import { getCurrentDateTime } from '../../utils/utils';
 
 export const dataSlice = createSlice({
     name: 'dataSlice',
@@ -33,3 +33,4 @@ export const dataSlice = createSlice({
   
     }
   });
+  export const dataSlice_actions = dataSlice.actions;
