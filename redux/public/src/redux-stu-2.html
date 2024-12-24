@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redux-stu-2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.min.js"></script>
+</head>
+<body>
+    <div id="header"></div>
+    <div id="menu"></div>
+    <div id="body"></div>
+    <div id="detail"></div>
+    <script>
+       
+        const header  = () =>{
+            var state = store.getState();
+            var menuText = '';
+            if(state.menu === 'main'){
+                menuText = '메인'
+            }else if (state.menu === 'read' || state.menu === 'detail'){
+                menuText = '보기'
+            }else if (state.menu === 'write'){
+                menuText = '쓰기'
+            }else if (state.menu === 'delete'){
+                menuText = '삭제'
+            }else if (state.menu === 'edit'){
+                menuText = '수정'
+            }else{
+                menuText = 'Welcome'
+            }
+            document.querySelector('#header').innerHTML=`
+                <h1>${menuText}</h1>
+            `
+        }
+
+        const menu = () => {
+            
+            document.querySelector('#menu').innerHTML=`
+                <ul>
+                    <li><a href="/main" onClick = "event.preventDefault(); store.dispatch({type : 'MENU',menu : 'main'});">메인으로</a></li>
+                    <li><a href="/read" onClick = "event.preventDefault(); store.dispatch({type : 'MENU' , menu : 'read'});">보기</a></li>
+                    <li><a href="/write" onClick = "event.preventDefault(); store.dispatch({type : 'MENU', menu : 'write'});">쓰기</a></li>
+                    <li><a href="/delete" onClick = "event.preventDefault(); store.dispatch({type : 'DELETE'});">삭제</a></li>
+                    <li><a href="/edit" onClick = "event.preventDefault(); store.dispatch({type : 'MENU' , menu : 'edit'});">수정</a></li>
+                </ul>
+
+            `
+        }
+
+        const body = () => {
+            var state = store.getState();
+            
+            if(state.menu === 'main'){
+                document.querySelector('#body').innerHTML=``;
+            }else if(state.menu === 'read'){
+                var readHtml = '';
+                if(state.contents.length > 0){
+                    for(let i = 0; i < state.contents.length; i++){
+                        readHtml += `<li><a href="/" onClick = "event.preventDefault(); store.dispatch({type : 'READ', selected_id  : ${state.contents[i].id}});">${state.contents[i].title}</a></li>`
+                    }
+                }else{
+                    readHtml += `<li>저장된 글이 없습니다.</li>`
+                }
+                document.querySelector('#body').innerHTML=`
+                    <ul>
+                        ${readHtml}
+                    </ul>
+                `
+            }else if(state.menu === 'write'){
+                var writeHtml = '';
+                writeHtml += `
+                    <form onsubmit = "
+                        event.preventDefault();
+                        var _title = this.title.value;
+                        var _content = this.content.value;
+                        store.dispatch({type:'WRITE',title: _title,content:_content});
+
+                    ">
+                        <p><input type="text" name="title" placeholder="title..."></p>
+                        <p><textarea type="text" name="content" placeholder="content..."></textarea></p>
+                        <p><input type="submit"></p>
+                        
+                    </form>
+                `
+                document.querySelector('#body').innerHTML=`
+                    ${writeHtml}
+                `
+            } else if (state.menu === 'edit'){
+                if(state.selected_id > 0){
+                    var writeHtml = '';
+                var editTitle = '';
+                var editContent = '';
+                var contents = state.contents;
+
+                for(let i = 0; i < contents.length; i++){
+                    if(contents[i].id === state.selected_id){
+                        editTitle = contents[i].title;
+                        editContent = contents[i].content;
+                    }
+                }
+                writeHtml += `
+                    <form onsubmit = "
+                        event.preventDefault();
+                        var _title = this.title.value;
+                        var _content = this.content.value;
+                        
+                        store.dispatch({type:'EDIT',title: _title,content:_content});
+
+                    ">
+                        <p><input type="text" name="title" placeholder="title..." value="${editTitle}"></p>
+                        <p><textarea type="text" name="content" placeholder="content...">${editContent}</textarea></p>
+                        <p><input type="submit"></p>
+                        
+                    </form>
+                `
+                document.querySelector('#body').innerHTML=`
+                    ${writeHtml}
+                `
+                }else{
+                    document.querySelector('#body').innerHTML=`
+                    <p>선택된 글이 없습니다.</p>
+                `
+                }
+
+                
+            }
+        }
+
+        const detail = () =>{
+            var state = store.getState();
+            var contents = state.contents;
+            var detail = "";
+            if(state.menu === 'detail'){
+                for(let i = 0; i < contents.length; i++){
+                    if(contents[i].id === state.selected_id){
+                        detail = contents[i].content;
+                    }
+                }
+                document.querySelector('#detail').innerHTML=`
+                    ${detail}
+                `
+            }else{
+                document.querySelector('#detail').innerHTML=``
+            }
+            
+        }
+
+        const Reducer  = (state, action) =>{
+            if(state === undefined){
+                return {selected_id : 0,max_index : 0 , menu : '', contents : []}
+            }
+
+            var newState = {};
+            //body 부분 조건
+            if(action.type === 'MENU'){
+                newState = Object.assign({},state,{menu: action.menu});
+            }else if (action.type === 'READ'){
+                newState = Object.assign({},state,{menu: 'detail',selected_id: action.selected_id});
+            }
+            else if(action.type === 'WRITE'){
+                var _title = action.title;
+                var _content = action.content;
+                var newContents = [...state.contents];
+                newContents.push({id: (state.max_index)+1,title : _title, content: _content})
+                newState = Object.assign({},state,{contents: newContents, max_index: state.max_index+1,menu:'read'});
+            }else if (action.type === 'DELETE'){
+                if(state.selected_id !== undefined){
+                    var newContents = state.contents.filter((content) => content.id !== state.selected_id);
+                    newState = Object.assign({},state,{contents: newContents ,menu:'read'});
+                }else {
+                    return state;
+                }
+            }else if (action.type === 'EDIT'){
+                if(state.selected_id != undefined){
+                    var _title = action.title;
+                    var _content = action.content;
+                    var newContents = state.contents.filter((content) => content.id !== state.selected_id);
+                    newContents.push({id: state.selected_id,title : _title, content: _content})
+                    newState = Object.assign({},state,{contents: newContents ,menu:'read'});
+                }else{
+                    return state;
+                }
+            }
+            console.log("fin_newState: ",newState)
+            return newState;
+        }
+
+        // store
+        var store  = Redux.createStore(Reducer);
+
+        header();
+        menu();
+        body();
+        detail();
+
+        store.subscribe(header);
+        store.subscribe(body);
+        store.subscribe(detail);
+    </script>
+</body>
+</html>
