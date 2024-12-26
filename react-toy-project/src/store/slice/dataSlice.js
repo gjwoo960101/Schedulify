@@ -29,6 +29,21 @@ export const dataSlice = createSlice({
         selectReadData.count = selectReadData.count + 1;
         state.readData = selectReadData;
         return state;
+      },
+      edit : (state,action) =>{
+        const editContent = state.content.map((item)=>{
+          if(item.num === action.payload.num){
+            return {
+              ...item,
+              ...action.payload,
+            }
+          }else{
+            return item;
+          }
+        })
+        state.content = editContent;
+        return state;
+
       }
   
     }

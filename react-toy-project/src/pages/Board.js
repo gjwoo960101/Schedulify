@@ -2,6 +2,7 @@ import '../App.css';
 import {BrowserRouter, Routes, Route, NavLink , useNavigate} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import { dataSlice_actions } from '../store/slice/dataSlice';
+import { useState} from 'react';
 
 
 export const Header = () =>{
@@ -72,7 +73,7 @@ const PostContent = () =>{
   const navigate = useNavigate();
   return (
     <div className='post-content'>
-          <h2>게시물 제목</h2>
+          <h2>{data.title}</h2>
           <p>작성자: <span>{data.author}</span></p>
           <p>작성일: <span>{data.createDate}</span></p>
           <p>조회수: <span>{data.count}</span></p>
@@ -80,10 +81,13 @@ const PostContent = () =>{
             <pre>{data.content}</pre>
           </div>
           <div className='edit-div'>
+            <button className='button del-button' onClick={(e)=>{
+                navigate('/delete');
+            }}>삭제</button>
             <button className='button' onClick={(e)=>{
-                
                 navigate('/edit');
-            }}>수정</button>  
+            }}>수정</button>
+            
           </div>
       </div>
   )
@@ -128,6 +132,65 @@ const PostForm = () =>{
   )
 }
 
+
+
+const EditForm = () =>{
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const editData = useSelector((state) => state.dataSlice.content.find(item => item.num === state.dataSlice.readData.num));
+  const [data, setData] = useState({
+    title: editData.title || '',
+    author: editData.author || '',
+    content: editData.content || ''
+  });
+  const handleChange = (e) =>{
+    const {name, value} = e.target;
+    setData((prevData) => (
+    {
+      ...prevData,
+      [name]: value
+    }));
+  }
+  return (
+    <div className='post-form'>
+      <h2>게시글 수정</h2>
+      <form onSubmit={(e)=>{
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const formValues = {};
+            formData.forEach((value, key) => {
+              if(key === 'num'){
+                formValues[key] = Number(value);
+              }else{
+                formValues[key] = value;
+              }
+              
+            });
+            dispatch(dataSlice_actions.edit(formValues));
+            navigate('/main');
+          }}>
+        <div className='form-group'>
+          <input type='hidden' id='num' name='num' value={editData.num}/>
+          <label htmlFor='title'>제목</label>
+          <input type='text' id='title' name='title' className='form-control' value={data.title} onChange={handleChange}/>
+        </div>
+        <div className='form-group'>
+          <label htmlFor='author'>작성자</label>
+          <input type='text' id='author' name='author' className='form-control' value={data.author} onChange={handleChange}/>
+        </div>
+        <div className='form-group'>
+          <label htmlFor='content'>내용</label>
+          <textarea id='content' name='content' className='form-control' value={data.content} onChange={handleChange}></textarea>
+        </div>
+        <div className='new-post-area'>
+          <button type='submit' className='button'>수정하기</button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
 const Main = () =>{
   return (
     <div>
@@ -144,7 +207,7 @@ const RightContainer = () =>{
         <Route path='/main' element={<Main/>}></Route>
         <Route path='/read' element={<PostContent/>}></Route>
         <Route path='/write' element={<PostForm/>}></Route>
-        <Route path='/edit' element={<PostForm/>}></Route>
+        <Route path='/edit' element={<EditForm/>}></Route>
       </Routes>
     </div>
   )
