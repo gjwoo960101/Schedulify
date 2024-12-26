@@ -8,7 +8,10 @@ import { useState} from 'react';
 export const Header = () =>{
   return (
     <header className='main-header'>
+      <div>
         <h1>게시판</h1>
+        <button className='login-button'>로그인</button>
+      </div>
     </header>
   )
 }
@@ -71,6 +74,7 @@ const PostContent = () =>{
 
   const data = useSelector((state) => state.dataSlice.readData);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <div className='post-content'>
           <h2>{data.title}</h2>
@@ -82,7 +86,8 @@ const PostContent = () =>{
           </div>
           <div className='edit-div'>
             <button className='button del-button' onClick={(e)=>{
-                navigate('/delete');
+                dispatch(dataSlice_actions.delete({num:data.num}));
+                navigate('/main');
             }}>삭제</button>
             <button className='button' onClick={(e)=>{
                 navigate('/edit');

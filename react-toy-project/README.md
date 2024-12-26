@@ -6,3 +6,4 @@
 - yarn add react-router-dom
 - yarn add @reduxjs/toolkit
 - yarn add redux react-redux
+- yarn add crypto-js

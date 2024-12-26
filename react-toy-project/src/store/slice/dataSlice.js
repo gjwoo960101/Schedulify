@@ -1,7 +1,8 @@
 import { createSlice} from '@reduxjs/toolkit';
 import { getCurrentDateTime } from '../../utils/utils';
 
-export const dataSlice = createSlice({
+export const dataSlice = createSlice(
+  {
     name: 'dataSlice',
     initialState: {
       maxNum:0,
@@ -43,9 +44,13 @@ export const dataSlice = createSlice({
         })
         state.content = editContent;
         return state;
-
+      },
+      delete : (state,action) =>{
+        const deleteContent = state.content.filter((item) => item.num !== action.payload.num);
+        state.content = deleteContent;
+        return state;
       }
-  
     }
-  });
+  }
+);
   export const dataSlice_actions = dataSlice.actions;
